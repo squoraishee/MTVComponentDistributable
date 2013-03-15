@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+ http://maven.apache.org/maven-v4_0_0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+ <groupId>mtv.component</groupId>
+ <artifactId>MTVComponentLib</artifactId>
+ <version>1.0.1</version>
+ <packaging>jar</packaging>
+ <name>Maven Repository</name>
+<!-- What we are goign to do here is integrate maven with git so github becomes a remote maven repsotiroy so we dont have to host our repoistory on a central maven server but we can -->
+<!-- http://stackoverflow.com/questions/14013644/hosting-a-maven-repository-on-github/14013645#14013645 (AN UTMOSTLEY IMPORTANT REFERENCE -->
+<distributionManagement>
+    <repository>
+        <id>internal.repo</id>
+        <name>Temporary Staging Repository</name>
+        <url>file://${project.build.directory}/mvn-repo</url>
+    </repository>
+</distributionManagement>
+<properties>
+    <!-- github server corresponds to entry in ~/.m2/settings.xml -->
+    <github.global.server>github</github.global.server>
+</properties>
+
+<dependencies>
+    <dependency>
+  		<groupId>com.google.android</groupId>
+  		<artifactId>android</artifactId>
+  		<version>3.1.0</version>
+  		<scope>system</scope>
+  		<systemPath>${project.basedir}/android.jar</systemPath>
+	</dependency>
+</dependencies>
+  
+<build>
+    <plugins>
+        <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        
+        <version>2.4</version>
+          <configuration>
+              <packaging>jar</packaging> 
+        	<archiveClasses>true</archiveClasses>
+    	    <attachClasses>true</attachClasses>
+        </configuration>
+		<executions>
+          <execution>
+            <id>default</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+        <plugin>
+            <groupId>com.github.github</groupId>
+            <artifactId>site-maven-plugin</artifactId>
+            <version>0.7</version>
+            <configuration>
+                <message>Maven artifacts for ${project.version}</message>  <!-- git commit message -->
+                <noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
+                <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
+                <branch>refs/heads/mvn-repo</branch>                       <!-- remote branch name -->
+                <includes><include>**/*</include></includes>
+                <repositoryName>TestRepo</repositoryName>      <!-- github repo name -->
+                <repositoryOwner>squoraishee</repositoryOwner>    <!-- github username  -->
+            </configuration>
+            <executions>
+              <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
+              <execution>
+                <goals>
+                  <goal>site</goal>
+                </goals>
+                <phase>deploy</phase>
+              </execution>
+            </executions>
+        </plugin>
+    </plugins> <!-- so this pom only uploads the ocmponents  -->
+</build>
+<!--  so why are all theose other dpeendnecies coming into my maven updat eproject rpo -->
+<!-- SO basically any component you want to clone to a maven repository you would use this pom xml file and put it in your component directory -->
+<!-- YOu need to host a maven repository somewhere so why not off of git hub.  Github maven integration is non trivial but since git is being used for everything why not -->
+<!--  github by default is NOT a maven repository it has to be created into one and given the SPECIFIC directory structure of one through the site-maven-plugin for maven -->
+<!--  once you have added your component as a maven repository it can be added as part of a dependancy management package for maven trhough your component donwloadable pom (which is the equivalent ot your pod) -->
+<!-- The component downloadable pom acts as a -->
+<!-- TO clarify when adding a component to a Maven repository it will have its own pom file -->
+<!-- There will also be a pom file for whne you want to integrate the component.  That pom file has to be checked out of git but you don't even need a jar file ONLY THAT POM -->
+<!-- so 2 pom files are required -->
+</project>
+ 
+
+ 	

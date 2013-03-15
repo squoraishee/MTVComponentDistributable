@@ -65,8 +65,8 @@
                 <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
                 <branch>refs/heads/mvn-repo</branch>                       <!-- remote branch name -->
                 <includes><include>**/*</include></includes>
-                <repositoryName>TestRepo</repositoryName>      <!-- github repo name -->
-                <repositoryOwner>squoraishee</repositoryOwner>    <!-- github username  -->
+                <repositoryName>Android-Maven</repositoryName>      <!-- github repo name -->
+                <repositoryOwner>mtvn-player</repositoryOwner>    <!-- github username  -->
             </configuration>
             <executions>
               <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
